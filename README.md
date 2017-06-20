@@ -13,3 +13,5 @@ Les liens de téléchargement CSV sont renseignés dans la variable urls de conf
 2. 	Ajouter l'URL du lien de téléchargement du CSV dans la variable urls de config.py.
 
 Si aucun lien n'est disponible, le programme affichera à la place le premier mot de la description, habituellement le nom de l'entreprise. Si le nom de l'entreprise comporte plusieurs mots, seul le premier sera affiché.
+
+La version la plus récente de l'application est disponible à l'adresse : <https://scrappingtogether-171210.appspot.com/getData>
