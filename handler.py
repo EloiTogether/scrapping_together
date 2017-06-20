@@ -1,7 +1,7 @@
 # coding: utf-8
 
 '''
-Projet test AppEngine
+Projet scrapping_together
 Auteur : Eloi Zalczer
 Année : 2017
 
@@ -10,16 +10,10 @@ handler.py
 '''
 
 import webapp2
-import jinja2
 import functions
 import urllib
 import textwrap
-import os
-
-JINJA_ENVIRONMENT = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-    extensions=['jinja2.ext.autoescape'],
-    autoescape=True)
+from template import generateTemplate
 
 class HelloWorld(webapp2.RequestHandler):
 
@@ -31,10 +25,11 @@ class results(webapp2.RequestHandler):
 
     def get(self):
         keywords=self.request.get('keywords')
+        all_keywords=self.request.get('all_keywords')
         keywords_list=keywords.encode('utf-8').split(',')
-        ret=functions.getData(keywords_list)
-        template=JINJA_ENVIRONMENT.get_template('results.html')
-        self.response.write(template.render(values=ret))
+        ret=functions.getData(keywords_list, all_keywords)
+        page=generateTemplate(ret)
+        self.response.write(page)
 
 class getData(webapp2.RequestHandler):
 
@@ -51,6 +46,7 @@ class getData(webapp2.RequestHandler):
                 <form action="/results?{keywords}" method="get">
                   Keywords:
                     <input type="text" name="keywords" required>
+                    <input type="checkbox" name="all_keywords">
                     <input type="submit" value="Envoyer">
                 </form>
               </body>
