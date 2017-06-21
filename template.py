@@ -61,8 +61,12 @@ PAGE_END="""</table>
 def generateTemplate(ret):
 
     page=PAGE_BEGIN
-    sorted_data = sorted(ret, key=lambda k: k['matches'], reverse=True)
+    sorted_data = sort_keywords(ret)
     for item in sorted_data:
+        matches_string=""
+        for subitem in item['matches']:
+            matches_string += subitem +" : "+str(item['matches'][subitem])+", "
+
         if "www" in item['key'] or "http" in item['key']:
             page += '''<tr>
                         <th><a href="'''+item['key']+'">'+item['key']+'''</a></th>
@@ -72,10 +76,10 @@ def generateTemplate(ret):
                         <th>'''+item['key']+'''</th>
                         <th>'''
         if item['matches']!="":
-                page += item['matches'][:-2]+'''</th>
+                page += matches_string[:-2]+'''</th>
                      <th>'''
         else:
-                page += item['matches']+'''</th>
+                page += matches_string+'''</th>
                         <th>'''
         if item['additional_keywords']!="":
             page += item['additional_keywords'][:-2]+'''</th>
@@ -86,3 +90,8 @@ def generateTemplate(ret):
 
     page += PAGE_END
     return page
+
+
+def sort_keywords(ret):
+    s = sorted(ret, key=lambda k: sum(k['matches'].values()), reverse=True)
+    return sorted(s, key=lambda k: sum(x>0 for x in (k['matches']).values()), reverse=True)
