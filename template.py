@@ -60,7 +60,7 @@ PAGE_END="""</table>
 
 def generateTemplate(ret):
 
-    page=PAGE_BEGIN
+    page = PAGE_BEGIN
     sorted_data = sort_keywords(ret)
     for item in sorted_data:
         matches_string=""

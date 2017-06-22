@@ -13,9 +13,11 @@ import urllib2
 import csv
 import models
 
+
 def getData(keywords_list, all_keywords, profile):
     responses=[]
     res = models.extractor_url.query().fetch()
+    profile_key = models.profile.get_profile(profile)
     for item in res:
         try:
             responses.append(urllib2.urlopen(item.url))
@@ -24,8 +26,10 @@ def getData(keywords_list, all_keywords, profile):
 
     more_keywords=[]
     for keyword in keywords_list:
-        associated_keywords=models.dictionary_entry.get_by_keyword_and_profile(keyword, profile)
-        more_keywords += associated_keywords
+        for dictionary in profile_key.dictionaries:
+            if keyword in dictionary.keywords:
+                more_keywords += [x.encode('utf-8') for x in dictionary.keywords if x != keyword]
+
     if(all_keywords==""):
         return processData_one_keyword(responses, keywords_list, more_keywords)
 

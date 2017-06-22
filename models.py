@@ -10,29 +10,35 @@ models.py
 '''
 
 from google.appengine.ext import ndb
+import pickle
 
 import webapp2
 
 import config
 
 class dictionary_entry(ndb.Model):
-    profile = ndb.StringProperty(indexed=True)
-    keywords = ndb.StringProperty(repeated=True, indexed=True)
+    keywords = ndb.PickleProperty()
+
+class profile(ndb.Model):
+    name = ndb.StringProperty(indexed=True)
+    dictionaries = ndb.StructuredProperty(dictionary_entry, repeated=True)
 
     @classmethod
-    def get_profiles(cls):
-        res=cls.query(projection=[cls.profile], distinct=True).fetch()
-        return res if res else None
+    def fetch_profile(cls):
+        res=cls.query().filter().fetch()
+        return res
 
     @classmethod
-    def get_by_keyword_and_profile(cls, keyword, profile):
-        res=cls.query().filter(cls.profile == profile).fetch()
-        associated_keywords=[]
-        for item in res:
-            if keyword in item.keywords:
-                associated_keywords+= [x.encode('utf-8') for x in item.keywords]
+    def get_profile(cls, profile):
+        res=cls.query().filter(cls.name == profile).get()
+        return res
 
-        return associated_keywords
+    @classmethod
+    def add_dictionary(cls, profile, dictionary):
+        res=cls.query().filter(cls.name == profile).get()
+        new_dictionary = dictionary_entry(keywords=dictionary)
+        res.dictionaries.append(new_dictionary)
+        res.put()
 
 class extractor_url(ndb.Model):
     url = ndb.StringProperty(indexed=True)
