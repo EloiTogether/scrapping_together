@@ -67,9 +67,9 @@ def generateTemplate(ret):
         for subitem in item['matches']:
             matches_string += subitem +" : "+str(item['matches'][subitem])+", "
 
-        if "www" in item['key'] or "http" in item['key']:
+        if item['key'][0] == '!':
             page += '''<tr>
-                        <th><a href="'''+item['key']+'">'+item['key']+'''</a></th>
+                        <th><a href="'''+item['key'][1:]+'">'+item['key'][1:]+'''</a></th>
                         <th>'''
         else:
             page += '''<tr>
